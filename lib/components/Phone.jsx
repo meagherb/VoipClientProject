@@ -292,6 +292,13 @@ export default class Phone extends React.Component
 					});
 			});
 
+			session.on('icecandidate', (data) =>
+			{
+				data.ready();
+				logger.debug('ice Candidate Event trigged');
+			}
+			);
+
 			session.on('ended', () =>
 			{
 				this.setState(
@@ -313,7 +320,9 @@ export default class Phone extends React.Component
 		});
 
 		this._ua.start();
-
+		/**
+		 * 
+		 
 		// Set callstats stuff. Dont really know what this is so I will probably remove it. 
 		if (settings.callstats.enabled)
 		{
@@ -327,6 +336,7 @@ export default class Phone extends React.Component
 				settings.callstats.AppSecret
 			);
 		}
+		*/
 	}
 
 	componentWillUnmount()

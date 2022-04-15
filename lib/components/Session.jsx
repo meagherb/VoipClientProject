@@ -55,14 +55,14 @@ export default class Session extends React.Component
 		return (
 			<TransitionAppear duration={10}>
 				<div data-component='Session'>
-					<video
+					<video //This is where the Media Recorder component goes
 						ref='localVideo'
 						className={classnames('local-video', { hidden: !state.localHasVideo })}
 						autoPlay
 						muted
 					/>
 
-					<video
+					<video //This is where the MediaRecorder Component goes
 						ref='remoteVideo'
 						className={classnames('remote-video', { hidden: noRemoteVideo })}
 						autoPlay

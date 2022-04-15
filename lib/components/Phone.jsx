@@ -154,7 +154,7 @@ export default class Phone extends React.Component
 				});
 
 			// TODO: For testing.
-			window.UA = this._ua;
+			//window.UA = this._ua;
 		}
 		catch (error)
 		{
@@ -292,9 +292,14 @@ export default class Phone extends React.Component
 					});
 			});
 
-			session.on('icecandidate', (data) =>
+			session.on('icecandidate', (candidate, ready) =>
 			{
-				data.ready();
+				console.log('getting a candidate' + candidate.candidate.candidate);
+    			if (myCandidateTimeout!=null)
+        			clearTimeout(myCandidateTimeout);
+
+    			// 5 seconds timeout after the last icecandidate received!
+    			myCandidateTimeout = setTimeout(ready, 5000);
 				logger.debug('ice Candidate Event trigged');
 			}
 			);

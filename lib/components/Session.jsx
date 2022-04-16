@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HangUpIcon from 'material-ui/svg-icons/communication/call-end';
 import PauseIcon from 'material-ui/svg-icons/av/pause-circle-outline';
+import RecordIcon from 'material-ui/svg-icons/av/fiber-manual-record';
 import ResumeIcon from 'material-ui/svg-icons/av/play-circle-outline';
 import classnames from 'classnames';
 import JsSIP from 'jssip';
 import Logger from '../Logger';
 import TransitionAppear from './TransitionAppear';
 import { ReactMediaRecorder } from 'react-media-recorder';
+import { FlatButton } from 'material-ui';
 
 const logger = new Logger('Session');
+
 
 export default class Session extends React.Component 
 {
@@ -25,18 +28,27 @@ export default class Session extends React.Component
 			remoteHold : false,
 			canHold : false,
 			ringing : false,
+			mediaBlob : null,
+			
 		};
 
 		// Mounted flag
 		this._mounted = false;
 		// Local cloned stream
 		this._localClonedStream = null;
+		this.localVideoRef = React.createRef();
+		this.statusRef = React.createRef();
+		this.startRecordingRef = React.createRef();
+		this.stopRecordingRef = React.createRef();
+		
+
 	}
 
 	render() 
 	{
 		const state = this.state;
 		const props = this.props;
+			
 		let noRemoteVideo;
 
 		if (props.session.isInProgress() && !state.ringing)
@@ -52,15 +64,41 @@ export default class Session extends React.Component
 		else if (!state.remoteHasVideo)
 			noRemoteVideo = <div className='message'>no remote video</div>;
 
+
 		return (
 			<TransitionAppear duration={10}>
 				<div data-component='Session'>
-					<video //This is where the Media Recorder component goes
-						ref='localVideo'
-						className={classnames('local-video', { hidden: !state.localHasVideo })}
-						autoPlay
-						muted
-					/>
+				<ReactMediaRecorder
+						video
+						onStop={(blobUrl, blob) => {
+							console.log("onStop recording")
+							const url = URL.createObjectURL(blob)
+							let formData = new FormData()
+						
+							const myFile = new File([blobUrl], "demo.mp4", { type: 'video/mp4' });
+						
+						}}
+						
+						  render={({ status, startRecording, stopRecording, mediaBlobUrl }) => {
+							this.statusRef.current=status;
+							this.startRecordingRef.current=startRecording;
+							this.stopRecordingRef.current=stopRecording;
+							
+							return (
+									
+								<> 
+									<video //This is where the Media Recorder component goes
+										ref= {this.localVideoRef}
+										
+										className={classnames('local-video', { hidden: !state.localHasVideo })}
+										autoPlay
+										muted
+										/>
+								</>
+								//	</div>
+								)
+						}}
+						/>
 
 					<video //This is where the MediaRecorder Component goes
 						ref='remoteVideo'
@@ -81,6 +119,21 @@ export default class Session extends React.Component
 								color={'#fff'}
 								onClick={this.handleHangUp.bind(this)}
 							/>
+							{/*start recording button */}
+							<RecordIcon
+								className='control'
+								color={'#fff'}
+								onClick={this.startRecordingRef.current}
+							/>
+							{/*stop recording button */}
+							<RecordIcon
+								className='control'
+								color={'#fff'}
+								onClick={this.stopRecordingRef.current}
+							/>
+							<div>
+								{this.statusRef.current}
+							</div>
 
 							<Choose>
 								<When condition={!state.localHold}>
@@ -112,7 +165,7 @@ export default class Session extends React.Component
 
 		this._mounted = true;
 
-		const localVideo = this.refs.localVideo;
+		const localVideo = this.localVideoRef.current;
 		const session = this.props.session;
 		const peerconnection = session.connection;
 		const localStream = peerconnection.getLocalStreams()[0];
@@ -285,6 +338,7 @@ export default class Session extends React.Component
 		this._mounted = false;
 		JsSIP.Utils.closeMediaStream(this._localClonedStream);
 	}
+    
 
 	handleHangUp() 
 	{

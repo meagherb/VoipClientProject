@@ -21,7 +21,7 @@
     "react-addons-css-transition-group": "^15.6.2",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
-    "react-media-recorder": "^1.6.3",
+    "react-media-recorder": "^1.6.4",
     "react-notification-system": "^0.2.17",
     "url-parse": "^1.4.7"
   },
@@ -58,5 +58,19 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.1"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meagherb/VoipClientProject.git"
+  },
+  "bugs": {
+    "url": "https://github.com/meagherb/VoipClientProject/issues"
+  },
+  "homepage": "https://github.com/meagherb/VoipClientProject#readme"
 }

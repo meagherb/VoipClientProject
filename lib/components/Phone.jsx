@@ -292,17 +292,25 @@ export default class Phone extends React.Component
 					});
 			});
 
-			session.on('icecandidate', (candidate, ready) =>
-			{
-				console.log('getting a candidate' + candidate.candidate.candidate);
-    			if (myCandidateTimeout!=null)
-        			clearTimeout(myCandidateTimeout);
 
-    			// 5 seconds timeout after the last icecandidate received!
-    			myCandidateTimeout = setTimeout(ready, 5000);
-				logger.debug('ice Candidate Event trigged');
+			
+
+			/** 
+			
+			session.on("icecandidate", function (event) {
+			if (event.candidate.type === "srflx" &&
+				event.candidate.relatedAddress !== null &&
+				event.candidate.relatedPort !== null) {
+				event.ready();
 			}
-			);
+		});
+
+			session.on("icecandidate", function (event) {
+			event.ready();
+		});
+			 
+			
+			*/
 
 			session.on('ended', () =>
 			{

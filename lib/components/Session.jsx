@@ -156,6 +156,18 @@ export default class Session extends React.Component
 			});
 		}
 
+		var myCandidateTimeout = null;
+
+		session.on('icecandidate', function(candidate, ready) 
+		{
+    		console.log('getting a candidate' + candidate.candidate.candidate);
+    		if (myCandidateTimeout!=null)
+        		clearTimeout(myCandidateTimeout);
+
+    		// 5 seconds timeout after the last icecandidate received!
+    		myCandidateTimeout = setTimeout(candidate.ready, 5000);
+		});
+
 		session.on('progress', (data) => 
 		{
 			if (!this._mounted)
